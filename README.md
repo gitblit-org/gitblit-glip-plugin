@@ -34,6 +34,9 @@ There a handful of additional optional settings:
     glip.postTicketComments = true
     glip.postBranches = true
     glip.postTags = true
+    glip.defaultIcon =
+    glip.ticketIcon =
+    glip.gitIcon =
 
 #### glip.useProjectConversations
 
@@ -47,6 +50,10 @@ glip.network.token = 12345
 
 - For the *network/a/b/myrepo.git* repository, the conversation would be *network*.
 - For the *test.git* repository, the conversation would be the default conversation.
+
+#### glip.*Icon
+
+By default, Gitblit will use the Gravatar thumbnail for the event image.  If you would rather specify a fixed image to use for git or ticket events, then you may override these settings with the url of an image.  A 48px image seems to be the most appropriate dimension.
 
 ### Usage
 
