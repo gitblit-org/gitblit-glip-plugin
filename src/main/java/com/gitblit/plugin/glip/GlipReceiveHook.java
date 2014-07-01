@@ -225,14 +225,14 @@ public class GlipReceiveHook extends ReceiveHook {
 					username = commit.getAuthorIdent().getName();
 					email = username.toLowerCase();
 				}
-				String gravatarUrl = ActivityUtils.getGravatarThumbnailUrl(email, 16);
+//				String gravatarUrl = ActivityUtils.getGravatarThumbnailUrl(email, 16);
 				String commitUrl = getUrl(repo.name, null, commit.getName());
 				String shortId = commit.getName().substring(0, shortIdLen);
 				String shortMessage = StringUtils.escapeForHtml(StringUtils.trimString(commit.getShortMessage(), Constants.LEN_SHORTLOG), false);
 //				String row = String.format("|![%s](%s)|[%s](%s)|%s|\n",
 //						username, gravatarUrl, shortId, commitUrl, shortMessage);
-				String row = String.format("|[%s](%s)|%s|\n",
-						shortId, commitUrl, shortMessage);
+				String row = String.format("|%s|[%s](%s)|%s|\n",
+						username, shortId, commitUrl, shortMessage);
 				sb.append(row);
 			}
 			sb.append("\n");
