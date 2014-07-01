@@ -10,7 +10,7 @@ name: gitblit-glip-plugin
 description: Integrate Gitblit with your Glip team
 groupId: com.gitblit.plugin
 artifactId: glip
-version: 1.0.0
+version: 1.0.1-SNAPSHOT
 packaging: zip
 inceptionYear: 2014
 organization: gitblit.com
