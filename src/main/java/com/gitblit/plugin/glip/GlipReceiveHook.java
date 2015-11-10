@@ -345,10 +345,9 @@ public class GlipReceiveHook extends ReceiveHook {
 
     private List<RevCommit> getCommits(GitblitReceivePack receivePack, String baseId, String tipId) {
     	List<RevCommit> list = new ArrayList<RevCommit>();
-		RevWalk walk = receivePack.getRevWalk();
-		walk.reset();
-		walk.sort(RevSort.TOPO);
-		try {
+		try (RevWalk walk = receivePack.getRevWalk()) {
+			walk.reset();
+			walk.sort(RevSort.TOPO);
 			RevCommit tip = walk.parseCommit(receivePack.getRepository().resolve(tipId));
 			RevCommit base = walk.parseCommit(receivePack.getRepository().resolve(baseId));
 			walk.markStart(tip);
@@ -364,8 +363,6 @@ public class GlipReceiveHook extends ReceiveHook {
 			// Should never happen, the core receive process would have
 			// identified the missing object earlier before we got control.
 			log.error("failed to get commits", e);
-		} finally {
-			walk.release();
 		}
 		return list;
 	}

@@ -444,33 +444,30 @@ public class GlipTicketHook extends TicketHook {
 		return null;
     }
 
-    private List<RevCommit> getCommits(String repositoryName, String baseId, String tipId) {
-    	IRepositoryManager repositoryManager = GitblitContext.getManager(IRepositoryManager.class);
-    	Repository db = repositoryManager.getRepository(repositoryName);
-    	List<RevCommit> list = new ArrayList<RevCommit>();
-		RevWalk walk = new RevWalk(db);
-		walk.reset();
-		walk.sort(RevSort.TOPO);
-		walk.sort(RevSort.REVERSE, true);
-		try {
-			RevCommit tip = walk.parseCommit(db.resolve(tipId));
-			RevCommit base = walk.parseCommit(db.resolve(baseId));
-			walk.markStart(tip);
-			walk.markUninteresting(base);
-			for (;;) {
-				RevCommit c = walk.next();
-				if (c == null) {
-					break;
+	private List<RevCommit> getCommits(String repositoryName, String baseId, String tipId) {
+		IRepositoryManager repositoryManager = GitblitContext.getManager(IRepositoryManager.class);
+		List<RevCommit> list = new ArrayList<RevCommit>();
+		try (Repository db = repositoryManager.getRepository(repositoryName)) {
+			try (RevWalk walk = new RevWalk(db)) {
+				walk.reset();
+				walk.sort(RevSort.TOPO);
+				walk.sort(RevSort.REVERSE, true);
+				RevCommit tip = walk.parseCommit(db.resolve(tipId));
+				RevCommit base = walk.parseCommit(db.resolve(baseId));
+				walk.markStart(tip);
+				walk.markUninteresting(base);
+				for (;;) {
+					RevCommit c = walk.next();
+					if (c == null) {
+						break;
+					}
+					list.add(c);
 				}
-				list.add(c);
+			} catch (IOException e) {
+				// Should never happen, the core receive process would have
+				// identified the missing object earlier before we got control.
+				log.error("failed to get commits", e);
 			}
-		} catch (IOException e) {
-			// Should never happen, the core receive process would have
-			// identified the missing object earlier before we got control.
-			log.error("failed to get commits", e);
-		} finally {
-			walk.release();
-			db.close();
 		}
 		return list;
 	}
